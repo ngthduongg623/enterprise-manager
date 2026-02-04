@@ -12,6 +12,7 @@
     <hr>
     <div>
         <a sec:authorize="hasAnyRole('MANAGER','ADMIN')" class="btn btn-info mb-3" th:href="@{/employees/addEmployee}">Add Employee</a>
+        <a sec:authorize="hasRole('ADMIN')" class="btn btn-warning mb-3 ms-2" th:href="@{/accounts/list}">Manage Accounts</a>
     </div>
     <table class="w-100 table table-light" border="1">
         <thead class="bg-dark">

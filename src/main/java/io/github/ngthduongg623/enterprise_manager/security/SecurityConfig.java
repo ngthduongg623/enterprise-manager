@@ -1,6 +1,5 @@
 package io.github.ngthduongg623.enterprise_manager.security;
 
-import io.github.ngthduongg623.enterprise_manager.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +12,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import io.github.ngthduongg623.enterprise_manager.service.UserService;
 
 @Configuration
 public class SecurityConfig {
@@ -47,6 +48,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT,"/employees/employees") .hasRole("ADMIN")
                             .requestMatchers(HttpMethod.DELETE,"/employees/employees/**") .hasRole("ADMIN")
                             .requestMatchers("/register/**") .permitAll()
+                            .requestMatchers("/accounts/**").hasRole("ADMIN")
 
 
                             .anyRequest().authenticated()//any request to the app must be logged in

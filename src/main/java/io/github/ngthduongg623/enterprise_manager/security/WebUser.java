@@ -1,10 +1,13 @@
 package io.github.ngthduongg623.enterprise_manager.security;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class WebUser {
     @NotNull(message = "username is required")
+    @Email(message = "username must be a valid email")
+    @Size(max = 50, message = "username must be at most 50 characters")
     private String username;
     @NotNull(message = "password is required")
     @Size(min = 1, message = "is required")

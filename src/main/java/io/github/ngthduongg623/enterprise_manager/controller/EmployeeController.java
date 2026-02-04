@@ -1,14 +1,20 @@
 package io.github.ngthduongg623.enterprise_manager.controller;
 
-import io.github.ngthduongg623.enterprise_manager.entity.Employee;
-import io.github.ngthduongg623.enterprise_manager.service.EmployeeService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
+import io.github.ngthduongg623.enterprise_manager.service.EmployeeService;
 
 @Controller
 @RequestMapping("/employees")
@@ -27,7 +33,7 @@ public class EmployeeController {
         model.addAttribute("isManager",isManager);
         model.addAttribute("changeId",value);
         model.addAttribute("employees",employeeService.findAll());
-        model.addAttribute(new Employee());
+        model.addAttribute(new EmployeeDetail());
         System.out.println(model.getAttribute("authentication"));
         return "list-employee" ;
     }
@@ -37,7 +43,7 @@ public class EmployeeController {
     }
     @GetMapping("/addEmployee")
     public String addEmployee(Model model){
-        model.addAttribute(new Employee());
+        model.addAttribute(new EmployeeDetail());
         return "employee-form" ;
     }
     @GetMapping("/enableChange/{employeeId}")
@@ -47,35 +53,35 @@ public class EmployeeController {
 
     }
     @GetMapping("/employees")
-    public List<Employee> findAll(){
+    public List<EmployeeDetail> findAll(){
 
         return employeeService.findAll();
     }
     @GetMapping("/employees/{employeeId}")
-    public Employee findById(@PathVariable int employeeId) {
-        Employee employee =employeeService.findById(employeeId);
+    public EmployeeDetail findById(@PathVariable int employeeId) {
+        EmployeeDetail employee =employeeService.findById(employeeId);
         if (employee ==null){
             throw new EmployeeNotFoundException("employee id not found - "+employeeId);
         }
         return employee;
     }
     @PostMapping("/employees")
-    public String addEmployee(Employee employee){//or @ModelAttribute("employee") Employee employee
+    public String addEmployee(EmployeeDetail employee){//or @ModelAttribute("employee") EmployeeDetail employee
         //in case of passing an id via json we gonna set it to 0 to do insert instead of an update
-        //employee.setId(0);
+        //employee.setEmployeeId(0);
         employeeService.save(employee);
           // it has updated id from DB in case of insert
         value=-1;
         return "redirect:/employees/list";
     }
     @PutMapping("/employees")
-    public void updateEmployee(Employee employee){
+    public void updateEmployee(EmployeeDetail employee){
         System.out.println(employee);
         employeeService.save(employee);
     }
     @DeleteMapping("/employees/{employeeId}")
     public String deleteEmployee(@PathVariable int employeeId){
-        Employee tempEmployee =employeeService.findById(employeeId);
+        EmployeeDetail tempEmployee =employeeService.findById(employeeId);
         if (tempEmployee == null)throw  new EmployeeNotFoundException("employee id not found - "+employeeId);
         employeeService.deleteById(employeeId);
         return "redirect:/employees/list" ;

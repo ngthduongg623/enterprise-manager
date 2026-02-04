@@ -1,16 +1,19 @@
 package io.github.ngthduongg623.enterprise_manager.service;
 
-import io.github.ngthduongg623.enterprise_manager.entity.Employee;
-
 import java.util.List;
+import java.util.Optional;
+
+import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
 
 public interface EmployeeService {
 
-    List<Employee> findAll();
+    List<EmployeeDetail> findAll();
 
-    Employee findById(int theId);
+    EmployeeDetail findById(int theId);
 
-    Employee save(Employee theEmployee);
+    Optional<EmployeeDetail> findByIdOptional(int theId);
+
+    EmployeeDetail save(EmployeeDetail theEmployee);
 
     void deleteById(int theId);
 

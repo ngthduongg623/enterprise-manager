@@ -1,33 +1,34 @@
 package io.github.ngthduongg623.enterprise_manager.service;
 
-import io.github.ngthduongg623.enterprise_manager.dao.EmployeeRepository;
-import io.github.ngthduongg623.enterprise_manager.entity.Employee;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import io.github.ngthduongg623.enterprise_manager.dao.EmployeeDetailRepository;
+import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private EmployeeDetailRepository employeeDetailRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
-        employeeRepository = theEmployeeRepository;
+    public EmployeeServiceImpl(EmployeeDetailRepository theEmployeeDetailRepository) {
+        employeeDetailRepository = theEmployeeDetailRepository;
     }
 
     @Override
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
+    public List<EmployeeDetail> findAll() {
+        return employeeDetailRepository.findAll();
     }
 
     @Override
-    public Employee findById(int theId) {
-        Optional<Employee> result = employeeRepository.findById(theId);
+    public EmployeeDetail findById(int theId) {
+        Optional<EmployeeDetail> result = employeeDetailRepository.findById(theId);
 
-        Employee theEmployee = null;
+        EmployeeDetail theEmployee = null;
 
         if (result.isPresent()) {
             theEmployee = result.get();
@@ -41,12 +42,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee save(Employee theEmployee) {
-        return employeeRepository.save(theEmployee);
+    public Optional<EmployeeDetail> findByIdOptional(int theId) {
+        return employeeDetailRepository.findById(theId);
+    }
+
+    @Override
+    public EmployeeDetail save(EmployeeDetail theEmployee) {
+        return employeeDetailRepository.save(theEmployee);
     }
 
     @Override
     public void deleteById(int theId) {
-        employeeRepository.deleteById(theId);
+        employeeDetailRepository.deleteById(theId);
     }
 }
