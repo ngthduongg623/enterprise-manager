@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Quản lý Làm thêm giờ</h2>
+        <a th:href="@{/overtime/new}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Đăng ký làm thêm</a>
+    </div>
+
+    <form method="get" th:action="@{/overtime/list}" class="row g-3 mb-4">
+        <div class="col-auto">
+            <input type="month" class="form-control" name="month" th:value="${selectedMonth}" placeholder="Chọn tháng">
+        </div>
+        <div class="col-auto position-relative">
+            <input type="text" class="form-control" name="employeeName" list="employeeOptions" 
+                   th:value="${selectedEmployeeName}" placeholder="Nhập tên nhân viên...">
+            <datalist id="employeeOptions">
+                <option th:each="emp : ${employees}" th:value="${emp.name}"></option>
+            </datalist>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary"><i class="bi bi-search"></i> Tìm kiếm</button>
+            <a th:href="@{/overtime/list}" class="btn btn-outline-secondary" th:if="${selectedMonth != null or selectedEmployeeName != null}">Xóa lọc</a>
+        </div>
+    </form>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nhân viên</th>
+                    <th>Ngày</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Lý do</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ot : ${overtimeRecords}">
+                    <td th:text="${ot.id}">1</td>
+                    <td th:text="${ot.employee != null ? ot.employee.name : 'N/A'}">Nguyen Van A</td>
+                    <td th:text="${ot.date}">2024-01-01</td>
+                    <td th:text="${ot.startTime}">18:00</td>
+                    <td th:text="${ot.endTime}">20:00</td>
+                    <td th:text="${ot.reason}">Dự án gấp</td>
+                    <td class="text-end">
+                        <a th:href="@{/overtime/edit/{id}(id=${ot.id})}" class="btn btn-sm btn-outline-primary me-2"><i class="bi bi-pencil"></i> Sửa</a>
+                        <a th:href="@{/overtime/delete/{id}(id=${ot.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa bản ghi này?');"><i class="bi bi-trash"></i> Xóa</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -18,10 +18,13 @@ public class Account {
     @NotBlank(message = "Email không được để trống")
     private String email;
     
-    @Column(name = "password", length = 50, nullable = false)
+    @Column(name = "password", length = 60, nullable = false)
     @NotBlank(message = "Password không được để trống")
     private String password;
     
+    @Column(name = "role", length = 50)
+    private String role;
+
     public Account() {
     }
     
@@ -44,5 +47,13 @@ public class Account {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

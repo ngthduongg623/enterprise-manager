@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Đăng ký Làm thêm giờ</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/overtime/save}" th:object="${overtimeRecord}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nhân viên</label>
+                            <input type="text" class="form-control" list="employeeOptions" id="employeeSearch" 
+                                   th:value="${overtimeRecord.employee != null ? overtimeRecord.employee.name + ' (ID: ' + overtimeRecord.employee.employeeId + ')' : ''}"
+                                   placeholder="Nhập tên nhân viên..." autocomplete="off" required>
+                            <datalist id="employeeOptions">
+                                <option th:each="emp : ${employees}" 
+                                        th:value="${emp.name} + ' (ID: ' + ${emp.employeeId} + ')'" 
+                                        th:data-id="${emp.employeeId}"></option>
+                            </datalist>
+                            <!-- Hidden input to store the actual Employee ID for submission -->
+                            <input type="hidden" name="employee" id="employeeId" th:value="${overtimeRecord.employee != null ? overtimeRecord.employee.employeeId : ''}">
+                            
+                            <!-- Display Employee ID separately -->
+                            <div class="mt-2 row">
+                                <label class="col-sm-3 col-form-label text-muted">Mã nhân viên:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control-plaintext" id="employeeIdDisplay" 
+                                           th:value="${overtimeRecord.employee != null ? overtimeRecord.employee.employeeId : ''}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày</label>
+                            <input type="date" class="form-control" th:field="*{date}" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col"><label class="form-label">Bắt đầu</label><input type="time" class="form-control" th:field="*{startTime}" required></div>
+                            <div class="col"><label class="form-label">Kết thúc</label><input type="time" class="form-control" th:field="*{endTime}" required></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Lý do</label>
+                            <textarea class="form-control" th:field="*{reason}" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/overtime/list}" class="btn btn-secondary me-2">Hủy</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                    
+                    <script>
+                        document.getElementById('employeeSearch').addEventListener('input', function() {
+                            var val = this.value;
+                            var list = document.getElementById('employeeOptions').options;
+                            var id = "";
+                            for (var i = 0; i < list.length; i++) {
+                                if (list[i].value === val) {
+                                    id = list[i].getAttribute('data-id');
+                                    break;
+                                }
+                            }
+                            document.getElementById('employeeId').value = id;
+                            document.getElementById('employeeIdDisplay').value = id;
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

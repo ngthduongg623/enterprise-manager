@@ -35,8 +35,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
     
     @Override
-    public List<Department> findByIdDepartment(Integer idDepartment) {
-        return departmentRepository.findByIdDepartment(idDepartment);
+    public boolean existsByName(String name) {
+        return departmentRepository.findByName(name) != null;
     }
     
     @Override

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0" th:text="${employee.employeeId == null ? 'Thêm nhân viên mới' : 'Cập nhật nhân viên'}">Form Nhân viên</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/employees/save}" th:object="${employee}" method="post">
+                    <input type="hidden" th:field="*{employeeId}" />
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" required placeholder="Nhập họ tên đầy đủ">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email (Tài khoản) <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" th:field="*{email}" required 
+                                   th:readonly="${employee.employeeId != null}" placeholder="email@company.com">
+                            <small class="text-muted" th:if="${employee.employeeId == null}">Mật khẩu mặc định sẽ được gửi qua email.</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phòng ban</label>
+                            <select class="form-select" th:field="*{department}">
+                                <option value="">-- Chọn phòng ban --</option>
+                                <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vai trò hệ thống</label>
+                            <select class="form-select" th:field="*{role}">
+                                <option value="EMPLOYEE">Nhân viên (Employee)</option>
+                                <option value="HR">Nhân sự (HR)</option>
+                                <option value="ADMIN">Quản trị viên (Admin)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" th:field="*{birth}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Giới tính</label>
+                            <select class="form-select" th:field="*{gender}">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" th:field="*{numberphone}" placeholder="09xxxxxxxx">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ngày vào làm</label>
+                            <input type="date" class="form-control" th:field="*{joinDate}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <textarea class="form-control" th:field="*{address}" rows="2"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/employees/list" class="btn btn-secondary">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Lưu thông tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

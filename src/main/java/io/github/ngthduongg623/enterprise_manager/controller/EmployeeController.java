@@ -1,89 +1,93 @@
 package io.github.ngthduongg623.enterprise_manager.controller;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
-import io.github.ngthduongg623.enterprise_manager.service.EmployeeService;
+import io.github.ngthduongg623.enterprise_manager.service.DepartmentService;
+import io.github.ngthduongg623.enterprise_manager.service.EmployeeDetailService;
 
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
-    private final EmployeeService employeeService;
-    private int value =-1;
 
-    public EmployeeController(EmployeeService employeeService) {
+    private final EmployeeDetailService employeeService;
+    private final DepartmentService departmentService;
+
+    @Autowired
+    public EmployeeController(EmployeeDetailService employeeService, DepartmentService departmentService) {
         this.employeeService = employeeService;
+        this.departmentService = departmentService;
     }
+
     @GetMapping("/list")
-    public String listEmployees(Model model,@Autowired Authentication authentication){
-        boolean isAdmin =authentication.getAuthorities().stream().anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()));
-        boolean isManager =authentication.getAuthorities().stream().anyMatch(auth -> "ROLE_MANAGER".equals(auth.getAuthority()));
-        model.addAttribute("isAdmin",isAdmin);
-        model.addAttribute("isManager",isManager);
-        model.addAttribute("changeId",value);
-        model.addAttribute("employees",employeeService.findAll());
-        model.addAttribute(new EmployeeDetail());
-        System.out.println(model.getAttribute("authentication"));
-        return "list-employee" ;
-    }
-    @GetMapping("/")
-    public String redirect(){
-        return "redirect:/employees/list" ;
-    }
-    @GetMapping("/addEmployee")
-    public String addEmployee(Model model){
-        model.addAttribute(new EmployeeDetail());
-        return "employee-form" ;
-    }
-    @GetMapping("/enableChange/{employeeId}")
-    public String enable(@PathVariable int employeeId,Model model) {
-        value = employeeId;
-        return "redirect:/employees/list";
+    public String listEmployees(@RequestParam(required = false) String keyword, Model model) {
+        List<EmployeeDetail> allEmployees = employeeService.findAll();
+        List<EmployeeDetail> employees = allEmployees;
 
-    }
-    @GetMapping("/employees")
-    public List<EmployeeDetail> findAll(){
-
-        return employeeService.findAll();
-    }
-    @GetMapping("/employees/{employeeId}")
-    public EmployeeDetail findById(@PathVariable int employeeId) {
-        EmployeeDetail employee =employeeService.findById(employeeId);
-        if (employee ==null){
-            throw new EmployeeNotFoundException("employee id not found - "+employeeId);
+        if (keyword != null && !keyword.isEmpty()) {
+            employees = allEmployees.stream()
+                    .filter(e -> e.getName().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
         }
-        return employee;
+
+        model.addAttribute("employees", employees);
+        model.addAttribute("allEmployees", allEmployees);
+        model.addAttribute("keyword", keyword);
+        return "employees/list";
     }
-    @PostMapping("/employees")
-    public String addEmployee(EmployeeDetail employee){//or @ModelAttribute("employee") EmployeeDetail employee
-        //in case of passing an id via json we gonna set it to 0 to do insert instead of an update
-        //employee.setEmployeeId(0);
-        employeeService.save(employee);
-          // it has updated id from DB in case of insert
-        value=-1;
+
+    @GetMapping("/new")
+    public String showFormForAdd(Model model) {
+        EmployeeDetail employee = new EmployeeDetail();
+        model.addAttribute("employee", employee);
+        model.addAttribute("departments", departmentService.findAll());
+        return "employees/form";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showFormForUpdate(@PathVariable("id") Integer id, Model model) {
+        Optional<EmployeeDetail> employee = employeeService.findByEmployeeId(id);
+        if (employee.isPresent()) {
+            model.addAttribute("employee", employee.get());
+            model.addAttribute("departments", departmentService.findAll());
+            return "employees/form";
+        }
         return "redirect:/employees/list";
     }
-    @PutMapping("/employees")
-    public void updateEmployee(EmployeeDetail employee){
-        System.out.println(employee);
+
+    @PostMapping("/save")
+    public String saveEmployee(@ModelAttribute("employee") EmployeeDetail employee) {
         employeeService.save(employee);
+        return "redirect:/employees/list";
     }
-    @DeleteMapping("/employees/{employeeId}")
-    public String deleteEmployee(@PathVariable int employeeId){
-        EmployeeDetail tempEmployee =employeeService.findById(employeeId);
-        if (tempEmployee == null)throw  new EmployeeNotFoundException("employee id not found - "+employeeId);
-        employeeService.deleteById(employeeId);
-        return "redirect:/employees/list" ;
+
+    @GetMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable("id") Integer id) {
+        employeeService.deleteByEmployeeId(id);
+        return "redirect:/employees/list";
+    }
+    
+    @GetMapping("/profile")
+    public String viewProfile(Model model, Principal principal) {
+        String email = principal.getName();
+        Optional<EmployeeDetail> employee = employeeService.findByEmail(email);
+        if (employee.isPresent()) {
+            model.addAttribute("employee", employee.get());
+            return "employees/profile";
+        }
+        return "redirect:/";
     }
 }

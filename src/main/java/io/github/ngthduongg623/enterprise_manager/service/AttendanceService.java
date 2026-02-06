@@ -7,8 +7,9 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.Attendance;
 
 /**
- * UC05 - Quản lý chấm công (Attendance Management)
- * UC07 - Xem dữ liệu chấm công (View Attendance Data)
+ * Quản lý lương, chấm công, giờ làm thêm
+ * UC05 - Quản lý chấm công
+ * UC07 - Xem dữ liệu chấm công
  */
 public interface AttendanceService {
     List<Attendance> findAll();

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Thông tin Chấm công</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/attendance/save}" th:object="${attendance}" method="post">
+                        <input type="hidden" th:field="*{id}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nhân viên</label>
+                            <input type="text" class="form-control" list="employeeOptions" id="employeeSearch" 
+                                   th:value="${attendance.employee != null ? attendance.employee.name + ' (ID: ' + attendance.employee.employeeId + ')' : ''}"
+                                   placeholder="Nhập tên nhân viên..." autocomplete="off" required>
+                            <datalist id="employeeOptions">
+                                <option th:each="emp : ${employees}" 
+                                        th:value="${emp.name} + ' (ID: ' + ${emp.employeeId} + ')'" 
+                                        th:data-id="${emp.employeeId}"></option>
+                            </datalist>
+                            <!-- Hidden input to store the actual Employee ID for submission -->
+                            <input type="hidden" name="employee" id="employeeId" th:value="${attendance.employee != null ? attendance.employee.employeeId : ''}">
+                            
+                            <!-- Display Employee ID separately -->
+                            <div class="mt-2 row">
+                                <label class="col-sm-3 col-form-label text-muted">Mã nhân viên:</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control-plaintext" id="employeeIdDisplay" 
+                                           th:value="${attendance.employee != null ? attendance.employee.employeeId : ''}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày</label>
+                            <input type="date" class="form-control" th:field="*{date}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" th:field="*{status}">
+                                <option value="Present">Có mặt (Present)</option>
+                                <option value="Absent">Vắng mặt (Absent)</option>
+                                <option value="Late">Đi muộn (Late)</option>
+                            </select>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col"><label class="form-label">Giờ vào</label><input type="time" class="form-control" th:field="*{checkInTime}"></div>
+                            <div class="col"><label class="form-label">Giờ ra</label><input type="time" class="form-control" th:field="*{checkOutTime}"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/attendance/list}" class="btn btn-secondary me-2">Hủy</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                    
+                    <script>
+                        document.getElementById('employeeSearch').addEventListener('input', function() {
+                            var val = this.value;
+                            var list = document.getElementById('employeeOptions').options;
+                            var id = "";
+                            for (var i = 0; i < list.length; i++) {
+                                if (list[i].value === val) {
+                                    id = list[i].getAttribute('data-id');
+                                    break;
+                                }
+                            }
+                            document.getElementById('employeeId').value = id;
+                            document.getElementById('employeeIdDisplay').value = id;
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold text-primary">Enterprise Manager</h1>
+    <p class="lead mb-4">Hệ thống quản lý nhân sự và tiền lương toàn diện.</p>
+    
+    <div class="row justify-content-center mt-5">
+        <!-- Hiển thị cho khách chưa đăng nhập -->
+        <div class="col-md-6" sec:authorize="!isAuthenticated()">
+            <div class="card p-4 shadow-sm">
+                <p>Vui lòng đăng nhập để truy cập hệ thống.</p>
+                <a href="/login" class="btn btn-primary btn-lg">Đăng nhập ngay</a>
+            </div>
+        </div>
+
+        <!-- Hiển thị cho người dùng đã đăng nhập -->
+        <div class="col-md-8" sec:authorize="isAuthenticated()">
+            <div class="alert alert-success">
+                Xin chào, <strong sec:authentication="name">User</strong>! Chúc bạn một ngày làm việc hiệu quả.
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="/employees/profile" class="btn btn-outline-primary"><i class="bi bi-person"></i> Xem hồ sơ</a>
+                <a href="/payroll/my-history" class="btn btn-outline-success"><i class="bi bi-cash-coin"></i> Xem lương</a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'HR')" href="/employees/list" class="btn btn-outline-dark"><i class="bi bi-people"></i> Quản lý nhân sự</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

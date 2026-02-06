@@ -1,6 +1,7 @@
 package io.github.ngthduongg623.enterprise_manager.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
-import io.github.ngthduongg623.enterprise_manager.service.EmployeeService;
+import io.github.ngthduongg623.enterprise_manager.service.EmployeeDetailService;
 
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
-    private final EmployeeService employeeService;
+    private final EmployeeDetailService employeeService;
 
     @Autowired
-    public EmployeeRestController(EmployeeService employeeService) {
+    public EmployeeRestController(EmployeeDetailService employeeService) {
         this.employeeService = employeeService;
     }
 
@@ -32,8 +33,9 @@ public class EmployeeRestController {
     }
     @GetMapping("/employees/{employeeId}")
     public EmployeeDetail findById(@PathVariable int employeeId) {
-        EmployeeDetail employee =employeeService.findById(employeeId);
-        if (employee ==null){
+        Optional<EmployeeDetail> result = employeeService.findByEmployeeId(employeeId);
+        EmployeeDetail employee = result.orElse(null);
+        if (employee == null) {
             throw new EmployeeNotFoundException("employee id not found - "+employeeId);
         }
         return employee;
@@ -52,9 +54,9 @@ public class EmployeeRestController {
     }
     @DeleteMapping("/employees/{employeeId}")
     public String deleteEmployee(@PathVariable int employeeId){
-        EmployeeDetail tempEmployee =employeeService.findById(employeeId);
-        if (tempEmployee == null)throw  new EmployeeNotFoundException("employee id not found - "+employeeId);
-        employeeService.deleteById(employeeId);
+        Optional<EmployeeDetail> tempEmployee = employeeService.findByEmployeeId(employeeId);
+        if (tempEmployee.isEmpty()) throw new EmployeeNotFoundException("employee id not found - "+employeeId);
+        employeeService.deleteByEmployeeId(employeeId);
         return "deleted employee id - "+employeeId ;
     }
 }

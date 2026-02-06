@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.ngthduongg623.enterprise_manager.entity.Payroll;
@@ -66,9 +66,10 @@ public class PayrollRestController {
             @RequestParam Integer employeeId,
             @RequestParam String month,
             @RequestParam(required = false, defaultValue = "0") Integer bonusAmount,
-            @RequestParam(required = false, defaultValue = "0") Integer fineAmount) {
-        Payroll payroll = payrollService.calculatePayroll(employeeId, month, bonusAmount, fineAmount);
+            @RequestParam(required = false, defaultValue = "0") Integer fineAmount,
+            @RequestParam(required = false, defaultValue = "0") Integer deduction,
+            @RequestParam(required = false, defaultValue = "10.5") Double insuranceRate) {
+        Payroll payroll = payrollService.calculatePayroll(employeeId, month, bonusAmount, fineAmount, deduction, insuranceRate);
         return ResponseEntity.ok(payroll);
     }
 }
-

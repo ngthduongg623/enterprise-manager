@@ -2,80 +2,60 @@ package io.github.ngthduongg623.enterprise_manager.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import io.github.ngthduongg623.enterprise_manager.service.UserService;
-
 @Configuration
 public class SecurityConfig {
-    @Bean
-    public UserDetailsManager userDetails(){
-        UserDetails john = User.builder()
-                .username("john")
-                .password("{noop}test123")
-                .roles("EMPLOYEE")
-                .build();
-        UserDetails mary =User.builder()
-                .username("mary")
-                .password("{noop}test123")
-                .roles("EMPLOYEE","MANAGER")
-                .build();
-        UserDetails susan = User.builder()
-                .username("susan")
-                .password("{noop}test123")
-                .roles("EMPLOYEE","MANAGER","ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(susan,john,mary);
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
         http.authorizeHttpRequests(configurer->
                     configurer
-                            .requestMatchers(HttpMethod.GET,"/","/employees/list") .hasAnyRole("EMPLOYEE","MANAGER","ADMIN")
-                            .requestMatchers(HttpMethod.POST,"/employees/employees") .hasAnyRole("MANAGER","ADMIN")
-                            .requestMatchers(HttpMethod.GET,"/employees/addEmployee") .hasAnyRole("MANAGER","ADMIN")
-                            .requestMatchers(HttpMethod.GET,"/employees/enableChange/**") .hasAnyRole("MANAGER","ADMIN")
-                            .requestMatchers(HttpMethod.PUT,"/employees/employees") .hasRole("ADMIN")
-                            .requestMatchers(HttpMethod.DELETE,"/employees/employees/**") .hasRole("ADMIN")
+                            .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                            .requestMatchers("/login", "/access-denied").permitAll()
                             .requestMatchers("/register/**") .permitAll()
-                            .requestMatchers("/accounts/**").hasRole("ADMIN")
-
-
-                            .anyRequest().authenticated()//any request to the app must be logged in
+                            // Feature specific roles
+                            .requestMatchers("/accounts/**").hasAnyRole("ADMIN", "HR")
+                            .requestMatchers("/employees/profile").authenticated()
+                            .requestMatchers("/employees/**").hasAnyRole("ADMIN", "HR")
+                            .requestMatchers("/payroll/my-history").authenticated()
+                            .requestMatchers("/payroll/**").hasAnyRole("ADMIN", "HR")
+                            .anyRequest().authenticated()
             ).formLogin(form->
                     form
-                            .loginPage("/showMyLoginPage")
-                            .loginProcessingUrl("/authenticateTheUser") //login form should post the data to this url for processing,no controller request needed for it
+                            .loginPage("/login")
+                            .loginProcessingUrl("/login")
                             .successHandler(customAuthenticationSuccessHandler)
-                            .permitAll() //allow any one to see the login page
-            ).logout(logout->logout.permitAll()   //its neceesary for showing the logout message
+                            .permitAll()
+            ).logout(logout->logout.permitAll()
             ).exceptionHandling(configurer->
                                         configurer.accessDeniedPage("/access-denied"));
         http.csrf(csrf->csrf.disable());
 
-
         return http.build();
     }
-    @SuppressWarnings("deprecation")
-	@Bean
-    public DaoAuthenticationProvider provider(UserService userService){
-        DaoAuthenticationProvider auth =new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
+
+    @Bean
+    public DaoAuthenticationProvider provider(AccountAuthenticationService accountAuthService){
+        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+        auth.setUserDetailsService(accountAuthService);
         auth.setPasswordEncoder(passwordEncoder());
-        return auth ;
+        return auth;
     }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

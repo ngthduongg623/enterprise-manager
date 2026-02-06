@@ -84,9 +84,4 @@ public class DepartmentRestController {
         return ResponseEntity.ok(department);
     }
     
-    @GetMapping("/by-manager/{manageId}")
-    public ResponseEntity<List<Department>> findByManager(@PathVariable Integer manageId) {
-        List<Department> departments = departmentService.findByIdDepartment(manageId);
-        return ResponseEntity.ok(departments);
-    }
 }

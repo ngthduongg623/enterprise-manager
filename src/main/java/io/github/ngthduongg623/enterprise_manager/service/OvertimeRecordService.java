@@ -7,8 +7,9 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.OvertimeRecord;
 
 /**
- * UC05 - Quản lý giờ làm thêm (Overtime Management)
- * UC07 - Xem dữ liệu giờ làm thêm (View Overtime Data)
+ * Quản lý lương, chấm công, giờ làm thêm
+ * UC05 - Quản lý giờ làm thêm
+ * UC07 - Xem dữ liệu giờ làm thêm
  */
 public interface OvertimeRecordService {
     List<OvertimeRecord> findAll();

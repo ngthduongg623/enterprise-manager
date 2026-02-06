@@ -43,4 +43,14 @@ public class AccountServiceImpl implements AccountService {
     public boolean existsByEmail(String email) {
         return accountRepository.existsById(email);
     }
+
+    @Override
+    public Account changePassword(String email, String newEncodedPassword) {
+        return accountRepository.findById(email)
+                .map(acc -> {
+                    acc.setPassword(newEncodedPassword);
+                    return accountRepository.save(acc);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + email));
+    }
 }

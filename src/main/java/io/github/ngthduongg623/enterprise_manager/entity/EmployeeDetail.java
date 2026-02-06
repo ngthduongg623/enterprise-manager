@@ -16,10 +16,10 @@ import jakarta.validation.constraints.NotBlank;
 
 /**
  * Chi tiết nhân viên (EmployeeDetail) - Thông tin chi tiết của nhân viên
- * Tương ứng với bảng users trong cơ sở dữ liệu
+ * Tương ứng với bảng employees trong cơ sở dữ liệu
  */
 @Entity
-@Table(name = "users")
+@Table(name = "employees")
 public class EmployeeDetail {
     
     @Id
@@ -28,8 +28,8 @@ public class EmployeeDetail {
     private Integer employeeId; // Khóa chính
     
     @NotBlank(message = "Tên nhân viên không được để trống")
-    @Column(name = "name", length = 50, nullable = false)
-    private String name;
+    @Column(name = "full_name", length = 50, nullable = false)
+    private String full_name;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_department", referencedColumnName = "id", nullable = false)
@@ -58,11 +58,14 @@ public class EmployeeDetail {
     @Column(name = "role", length = 100)
     private String role;
     
+    @Column(name = "base_salary")
+    private Integer baseSalary;
+    
     public EmployeeDetail() {
     }
     
     public EmployeeDetail(String name, String email) {
-        this.name = name;
+        this.full_name = name;
         this.email = email;
     }
     
@@ -76,11 +79,11 @@ public class EmployeeDetail {
     }
     
     public String getName() {
-        return name;
+        return full_name;
     }
     
     public void setName(String name) {
-        this.name = name;
+        this.full_name = name;
     }
     
     public Department getDepartment() {
@@ -145,5 +148,13 @@ public class EmployeeDetail {
     
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Integer getBaseSalary() {
+        return baseSalary;
+    }
+
+    public void setBaseSalary(Integer baseSalary) {
+        this.baseSalary = baseSalary;
     }
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Quản lý Tài khoản</h2>
+            <a th:href="@{/accounts/new}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Thêm tài khoản</a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                <tr>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="acc : ${accounts}">
+                    <td th:text="${acc.email}">email@example.com</td>
+                    <td th:text="${acc.role}">ROLE_USER</td>
+                    <td class="text-end">
+                        <a th:href="@{/accounts/delete/{email}(email=${acc.email})}" 
+                           class="btn btn-sm btn-outline-danger" 
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');">
+                            <i class="bi bi-trash"></i> Xóa
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${#lists.isEmpty(accounts)}" class="alert alert-info text-center mt-3">
+                Chưa có dữ liệu tài khoản.
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

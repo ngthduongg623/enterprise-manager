@@ -6,29 +6,47 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.Payroll;
 
 /**
+ * Quản lý lương, chấm công, giờ làm thêm & Thống kê
  * UC06 - Tính toán lương (Calculate Payroll)
- * UC07 - Xem thông tin tiền lương (View Salary Info)
+ * UC07 - Xem thông tin lương
+ * UC08 - Xem thống kê, báo cáo
  */
 public interface PayrollService {
+    
     List<Payroll> findAll();
+
     
     Optional<Payroll> findById(Integer id);
+
     
     List<Payroll> findByEmployeeId(Integer employeeId);
+
     
     List<Payroll> findByMonth(String month);
+
+    
+    Optional<Payroll> findByEmployeeIdAndMonth(Integer employeeId, String month);
     
     Payroll save(Payroll payroll);
+
     
     void deleteById(Integer id);
+
     
     /**
-     * UC06 - Calculate payroll for employee in given month
-     * @param employeeId employee to calculate for
-     * @param month month in format "YYYY-MM"
-     * @param bonusAmount bonus amount (thuong)
-     * @param fineAmount fine/penalty amount (phat)
-     * @return calculated Payroll record
+     * Calculate payroll for a given employee and month.
+     * UC06 - Tính toán lương cho một nhân viên trong tháng
      */
-    Payroll calculatePayroll(Integer employeeId, String month, Integer bonusAmount, Integer fineAmount);
+    Payroll calculatePayroll(Integer employeeId, String month, Integer bonusAmount, Integer finePerLate, Integer deduction, Double insuranceRate);
+    Payroll calculatePayroll(Integer employeeId, String month);
+    
+    /**
+     * UC06 - Tính toán lương cho toàn bộ nhân viên trong tháng
+     */
+    void calculateMonthlyPayroll(String month, Integer finePerLate, Integer deduction, Double insuranceRate);
+    
+    /**
+     * UC08 - Tổng hợp lương theo tháng
+     */
+    long getTotalPayrollByMonth(String month);
 }

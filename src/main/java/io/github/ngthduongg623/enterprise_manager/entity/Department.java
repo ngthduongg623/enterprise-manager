@@ -23,9 +23,6 @@ public class Department {
     @Column(name = "logo", length = 30)
     private String logo;
     
-    @Column(name = "id_department")
-    private Integer idDepartment; // Self-reference: Phòng ban cha (nếu có)
-    
     @Column(name = "name", length = 30, nullable = false)
     @NotBlank(message = "Tên phòng ban không được để trống")
     private String name;
@@ -51,14 +48,6 @@ public class Department {
     
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-    
-    public Integer getIdDepartment() {
-        return idDepartment;
-    }
-    
-    public void setIdDepartment(Integer idDepartment) {
-        this.idDepartment = idDepartment;
     }
     
     public String getName() {

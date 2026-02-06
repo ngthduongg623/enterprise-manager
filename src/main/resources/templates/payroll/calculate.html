@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::div})}">
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Tính lương tháng</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/payroll/calculate}" method="post">
+                        <div class="mb-3">
+                            <label for="month" class="form-label">Chọn tháng (YYYY-MM)</label>
+                            <input type="month" class="form-control" id="month" name="month" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fine" class="form-label">Tiền phạt mỗi lần muộn (VNĐ)</label>
+                            <input type="number" class="form-control" id="fine" name="fine" value="50000" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="insuranceRate" class="form-label">Tỷ lệ Bảo hiểm (%)</label>
+                            <input type="number" step="0.1" class="form-control" id="insuranceRate" name="insuranceRate" value="10.5" min="0" max="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="deduction" class="form-label">Giảm trừ gia cảnh/khác (VNĐ)</label>
+                            <input type="number" class="form-control" id="deduction" name="deduction" value="11000000" min="0">
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/payroll/manage}" class="btn btn-secondary me-2">Hủy</a>
+                            <button type="submit" class="btn btn-primary">Tính lương</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

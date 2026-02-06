@@ -1,73 +1,112 @@
 package io.github.ngthduongg623.enterprise_manager.config;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.ngthduongg623.enterprise_manager.dao.RoleDao;
-import io.github.ngthduongg623.enterprise_manager.dao.UserDao;
-import io.github.ngthduongg623.enterprise_manager.entity.Role;
-import io.github.ngthduongg623.enterprise_manager.entity.User;
-import jakarta.persistence.EntityManager;
+import io.github.ngthduongg623.enterprise_manager.entity.Account;
+import io.github.ngthduongg623.enterprise_manager.entity.Department;
+import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
+import io.github.ngthduongg623.enterprise_manager.service.AccountService;
+import io.github.ngthduongg623.enterprise_manager.service.DepartmentService;
+import io.github.ngthduongg623.enterprise_manager.service.EmployeeDetailService;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    private final RoleDao roleDao;
-    private final UserDao userDao;
+    private final AccountService accountService;
+    private final EmployeeDetailService employeeDetailService;
+    private final DepartmentService departmentService;
     private final PasswordEncoder passwordEncoder;
-    private final EntityManager entityManager;
 
-    public DataLoader(RoleDao roleDao, UserDao userDao, PasswordEncoder passwordEncoder, EntityManager entityManager) {
-        this.roleDao = roleDao;
-        this.userDao = userDao;
+    public DataLoader(AccountService accountService, 
+                      EmployeeDetailService employeeDetailService,
+                      DepartmentService departmentService,
+                      PasswordEncoder passwordEncoder) {
+        this.accountService = accountService;
+        this.employeeDetailService = employeeDetailService;
+        this.departmentService = departmentService;
         this.passwordEncoder = passwordEncoder;
-        this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        // ensure roles exist
-        if (roleDao.findRoleByName("ROLE_ADMIN") == null) {
-            entityManager.persist(new Role("ROLE_ADMIN"));
-        }
-        if (roleDao.findRoleByName("ROLE_EMPLOYEE") == null) {
-            entityManager.persist(new Role("ROLE_EMPLOYEE"));
+        // Ensure a department exists
+        Department itDept = departmentService.findByName("IT");
+        if (itDept == null) {
+            itDept = new Department();
+            itDept.setName("IT");
+            itDept = departmentService.save(itDept);
         }
 
-        // create default admin
-        if (userDao.findByUserName("admin@example.com") == null) {
-            Role adminRole = roleDao.findRoleByName("ROLE_ADMIN");
-            User admin = new User();
-            admin.setUserName("admin@example.com");
+        // Create default admin account
+        String adminEmail = "admin@example.com";
+        if (!accountService.existsByEmail(adminEmail)) {
+            Account admin = new Account();
+            admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setEnabled(true);
-            admin.setRoles(Arrays.asList(adminRole));
-            userDao.save(admin);
+            accountService.save(admin);
+            System.out.println("Created default admin account: " + adminEmail);
         }
 
-        // create some default employees for testing
-        if (userDao.findByUserName("employee1@example.com") == null) {
-            Role empRole = roleDao.findRoleByName("ROLE_EMPLOYEE");
-            User e1 = new User();
-            e1.setUserName("employee1@example.com");
-            e1.setPassword(passwordEncoder.encode("password1"));
-            e1.setEnabled(true);
-            e1.setRoles(Arrays.asList(empRole));
-            userDao.save(e1);
+        // Check and create EmployeeDetail independently
+        if (employeeDetailService.findByEmail(adminEmail).isEmpty()) {
+            EmployeeDetail adminEmp = new EmployeeDetail();
+            adminEmp.setEmail(adminEmail);
+            adminEmp.setName("Administrator");
+            adminEmp.setRole("ADMIN");
+            adminEmp.setDepartment(itDept);
+            adminEmp.setJoinDate(LocalDate.now());
+            adminEmp.setGender("Nam");
+            adminEmp.setNumberphone("0912345678");
+            adminEmp.setAddress("Hà Nội");
+            employeeDetailService.save(adminEmp);
+            System.out.println("Created default admin employee detail: " + adminEmail);
         }
-        if (userDao.findByUserName("employee2@example.com") == null) {
-            Role empRole = roleDao.findRoleByName("ROLE_EMPLOYEE");
-            User e2 = new User();
-            e2.setUserName("employee2@example.com");
-            e2.setPassword(passwordEncoder.encode("password2"));
-            e2.setEnabled(true);
-            e2.setRoles(Arrays.asList(empRole));
-            userDao.save(e2);
+
+        // Create some default employee accounts for testing
+        String emp1Email = "employee1@example.com";
+        if (!accountService.existsByEmail(emp1Email)) {
+            Account emp1 = new Account();
+            emp1.setEmail(emp1Email);
+            emp1.setPassword(passwordEncoder.encode("password1"));
+            accountService.save(emp1);
+            System.out.println("Created default employee account: " + emp1Email);
+        }
+
+        if (employeeDetailService.findByEmail(emp1Email).isEmpty()) {
+            EmployeeDetail emp1Detail = new EmployeeDetail();
+            emp1Detail.setEmail(emp1Email);
+            emp1Detail.setName("Employee One");
+            emp1Detail.setRole("EMPLOYEE");
+            emp1Detail.setDepartment(itDept);
+            emp1Detail.setJoinDate(LocalDate.now());
+            employeeDetailService.save(emp1Detail);
+            System.out.println("Created default employee detail: " + emp1Email);
+        }
+
+        String emp2Email = "employee2@example.com";
+        if (!accountService.existsByEmail(emp2Email)) {
+            Account emp2 = new Account();
+            emp2.setEmail(emp2Email);
+            emp2.setPassword(passwordEncoder.encode("password2"));
+            accountService.save(emp2);
+            System.out.println("Created default employee account: " + emp2Email);
+        }
+
+        if (employeeDetailService.findByEmail(emp2Email).isEmpty()) {
+            EmployeeDetail emp2Detail = new EmployeeDetail();
+            emp2Detail.setEmail(emp2Email);
+            emp2Detail.setName("Employee Two");
+            emp2Detail.setRole("EMPLOYEE");
+            emp2Detail.setDepartment(itDept);
+            emp2Detail.setJoinDate(LocalDate.now());
+            employeeDetailService.save(emp2Detail);
+            System.out.println("Created default employee detail: " + emp2Email);
         }
     }
 }
