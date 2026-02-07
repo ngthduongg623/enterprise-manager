@@ -6,10 +6,10 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.Payroll;
 
 /**
- * Quản lý lương, chấm công, giờ làm thêm & Thống kê
- * UC06 - Tính toán lương (Calculate Payroll)
- * UC07 - Xem thông tin lương
- * UC08 - Xem thống kê, báo cáo
+ * Quản lý lương, chấm công, giờ làm thêm và thống kê:
+ * Tính toán lương;
+ * Xem thông tin lương;
+ * Xem thống kê, báo cáo;
  */
 public interface PayrollService {
     

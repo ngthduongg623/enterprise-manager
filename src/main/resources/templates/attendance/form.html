@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Thông tin Chấm công</h4>
+                    <h4 class="mb-0">Thêm thông tin chấm công</h4>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/attendance/save}" th:object="${attendance}" method="post">
@@ -19,7 +19,7 @@
                                    placeholder="Nhập tên nhân viên..." autocomplete="off" required>
                             <datalist id="employeeOptions">
                                 <option th:each="emp : ${employees}" 
-                                        th:value="${emp.name} + ' (ID: ' + ${emp.employeeId} + ')'" 
+                                        th:value="${emp.name}" 
                                         th:data-id="${emp.employeeId}"></option>
                             </datalist>
                             <!-- Hidden input to store the actual Employee ID for submission -->

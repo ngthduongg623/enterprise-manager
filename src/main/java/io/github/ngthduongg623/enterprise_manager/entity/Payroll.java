@@ -46,10 +46,10 @@ public class Payroll {
     private Integer penalty; // Tiền phạt
     
     @Column(name = "thue")
-    private Integer tax; // Tiền thuế
+    private Integer tax; // Mức thuế TNCN
     
     @Column(name = "bao_hiem")
-    private Integer insurance; // Tiền bảo hiểm
+    private Integer insurance; // Mức đóng BHXH
     
     @Column(name = "tong_cong")
     private Integer totalSalary; // Tổng lương thực lĩnh

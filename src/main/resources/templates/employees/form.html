@@ -5,7 +5,7 @@
     <div class="col-md-10">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0" th:text="${employee.employeeId == null ? 'Thêm nhân viên mới' : 'Cập nhật nhân viên'}">Form Nhân viên</h4>
+                <h4 class="mb-0" th:text="${employee.employeeId == null ? 'Thêm nhân viên mới' : 'Cập nhật nhân viên'}">Thêm thông tin nhân viên</h4>
             </div>
             <div class="card-body">
                 <form th:action="@{/employees/save}" th:object="${employee}" method="post">

@@ -6,9 +6,9 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.EmployeeDetail;
 
 /**
- * Quản lý nhân viên, phòng ban
- * UC03 - Quản lý thông tin nhân viên
- * UC04 - Xem thông tin nhân viên
+ * Quản lý nhân viên, phòng ban:
+ * Quản lý thông tin nhân viên;
+ * Xem thông tin nhân viên;
  */
 public interface EmployeeDetailService {
     List<EmployeeDetail> findAll();

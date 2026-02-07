@@ -40,16 +40,18 @@ public class PayrollController {
     }
 
     @GetMapping("/calculate")
-    public String showCalculateForm() {
+    public String showCalculateForm(Model model) {
+        model.addAttribute("employees", employeeService.findAll());
         return "payroll/calculate";
     }
 
     @PostMapping("/calculate")
     public String calculatePayroll(@RequestParam("month") String month,
+                                   @RequestParam("employeeId") Integer employeeId,
                                    @RequestParam(value = "fine", defaultValue = "0") Integer fine,
                                    @RequestParam(value = "deduction", defaultValue = "0") Integer deduction,
                                    @RequestParam(value = "insuranceRate", defaultValue = "10.5") Double insuranceRate) {
-        payrollService.calculateMonthlyPayroll(month, fine, deduction, insuranceRate);
+        payrollService.calculatePayroll(employeeId, month, 0, fine, deduction, insuranceRate);
         return "redirect:/payroll/manage";
     }
 

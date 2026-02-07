@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::div})}">
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary"><i class="bi bi-pie-chart"></i> Thống kê nhân sự theo Phòng ban</h2>
+            <a href="/reports" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại Báo cáo Lương</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-light fw-bold">
+                        <i class="bi bi-list-ul"></i> Số lượng nhân viên từng phòng ban
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Tên Phòng ban</th>
+                                    <th class="text-end">Số lượng nhân viên</th>
+                                    <th class="text-end">Tỷ lệ (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry : ${departmentStats}">
+                                    <td th:text="${entry.key}"></td>
+                                    <td class="text-end fw-bold" th:text="${entry.value}"></td>
+                                    <td class="text-end">
+                                        <span th:text="${totalEmployees > 0 ? #numbers.formatDecimal(entry.value * 100.0 / totalEmployees, 1, 1) + '%' : '0%'}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-white bg-info shadow mb-3">
+                    <div class="card-header">Tổng số nhân viên</div>
+                    <div class="card-body">
+                        <h3 class="card-title display-4" th:text="${totalEmployees}">0</h3>
+                        <p class="card-text">Nhân sự toàn công ty</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,11 +6,11 @@ import java.util.Optional;
 import io.github.ngthduongg623.enterprise_manager.entity.Account;
 
 /**
- * Quản lý tài khoản (Account Management)
- * UC01 - Đăng nhập
- * UC02 - Quản lý tài khoản
- * UC09 - Đổi mật khẩu
- * UC10 - Đăng xuất
+ * Quản lý tài khoản:
+ * Đăng nhập
+ * Quản lý tài khoản
+ * Đổi mật khẩu
+ * Đăng xuất
  */
 public interface AccountService {
     List<Account> findAll();
@@ -24,7 +24,10 @@ public interface AccountService {
     boolean existsByEmail(String email);
 
     /**
-     * Change password for an existing account.
+     * Đổi mật khẩu cho tài khoản dựa trên email
+     * @param email
+     * @param newEncodedPassword
+     * @return
      */
     Account changePassword(String email, String newEncodedPassword);
 }
